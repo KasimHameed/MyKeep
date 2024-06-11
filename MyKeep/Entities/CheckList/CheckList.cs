@@ -8,6 +8,11 @@ public record CheckListItem(string Key, string Text);
 
 public class CheckListProjection: SingleStreamProjection<CheckList>
 {
+    public CheckListProjection()
+    {
+        DeleteEvent<ListDeleted>();
+    }
+    
     private static int IndexOf(IEnumerable<CheckListItem> items, string key)
         => items.Zip(Enumerable.Range(0, int.MaxValue), Tuple.Create).Single(i => i.Item1.Key == key).Item2;
     

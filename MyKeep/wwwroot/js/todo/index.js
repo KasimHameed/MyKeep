@@ -1,11 +1,13 @@
-const checkListTitle = $('#checkListTitle');
+const checkListTitle = $('#checkListTitle label');
 const pending = $('.pending');
 const pendingCheckbox = $('.pending input[type=checkbox]')
 const pendingLabel = $('.pending > label');
 const pendingItems = $('#pendingItems');
 const completedItems = $('#completedItems');
 const main = $('main');
+const checkListId = $('#checkListTitle').data('id');
 checkListTitle.on('focus', evt => {
+    console.dir(evt);
     const target = $(evt.target);
     const originalTitle = target.data("originalTitle");
     if (originalTitle === "") target.text("");
@@ -26,7 +28,7 @@ checkListTitle.on('focus', evt => {
 }).on('blur', evt => {
     const target = $(evt.target);
 
-    const payload = {id: checkListTitle.data('id'), title: target.text()};
+    const payload = {id: checkListId, title: target.text()};
 
     if (payload.title === "") {
         checkListTitle.addClass('text-muted');
@@ -37,7 +39,7 @@ checkListTitle.on('focus', evt => {
     }).then(_ => {
         checkListTitle.data('originalTitle', payload.title);
     });
-});
+}).on('click', _ => { checkListTitle.find('label').trigger('focus')});
 
 pendingItems.on('click', '.pending', evt => {
     evt.preventDefault();
@@ -61,7 +63,7 @@ pendingItems.on('blur', '.pending > label', evt => {
         method: "patch",
         contentType: "application/json",
         data: JSON.stringify({
-            id: checkListTitle.data('id'),
+            id: checkListId,
             key: key,
             text: target.text(),
             isCompleted: false
@@ -111,7 +113,7 @@ pendingItems.on('dragend', 'i[draggable=true]', evt => {
         method: "patch",
         contentType: "application/json",
         data: JSON.stringify({
-            id: checkListTitle.data('id'),
+            id: checkListId,
             key: dragKey,
             afterKey: targetKey
         })
@@ -136,7 +138,7 @@ main.on('click', '.remove-item', evt => {
         method: "delete",
         contentType: "application/json",
         data: JSON.stringify({
-            id: checkListTitle.data('id'),
+            id: checkListId,
             key: key,
             isCompleted: parent.is('.completed')
         })
@@ -154,7 +156,7 @@ pendingItems.on('change', 'input[type=checkbox]', evt => {
         method: "put",
         contentType: "application/json",
         data: JSON.stringify({
-            id: checkListTitle.data('id'),
+            id: checkListId,
             key: key
         })
     }).then(_ => {
@@ -173,7 +175,7 @@ completedItems.on('change', 'input[type=checkbox]', evt => {
         method: "put",
         contentType: "application/json",
         data: JSON.stringify({
-            id: checkListTitle.data('id'),
+            id: checkListId,
             key: key
         })
     }).then(_ => {
@@ -183,12 +185,23 @@ completedItems.on('change', 'input[type=checkbox]', evt => {
     })
 })
 
+$('#remove-list').on('click', evt => {
+    $.ajax({
+        url: "/api/checklist",
+        method: "delete",
+        contentType: "application/json",
+        data: JSON.stringify({id: checkListId})
+    }).then(_ => {
+        window.location = $("body").data('baseUrl');
+    })
+})
+
 $('#addPending').on('click', evt => {
     $.ajax({
         url: "/api/checklist/add",
         method: "post",
         contentType: "application/json",
-        data: JSON.stringify({id: checkListTitle.data('id')})
+        data: JSON.stringify({id: checkListId})
     }).then(data => {
         const newLabel = `<div class="pending position-relative" data-key="${data.key}"><i class="fa fa-grip-vertical fa-fw me-1" draggable="true"></i> <input type="checkbox"><label contenteditable="true"></label><i class="fa fa-close position-absolute end-0 pe-2 pt-1 remove-item" role="button"></i></div>`;
         pendingItems.append($(newLabel));

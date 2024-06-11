@@ -11,9 +11,10 @@
 }
 
 
-<h2 data-id="@Model.Id" id="checkListTitle" data-original-title="@(Model.CheckList.Title)"
-    class="@(string.IsNullOrEmpty(Model.CheckList.Title) ? "text-muted" : "")" contenteditable="true">
-    @title
+<h2 data-id="@Model.Id" id="checkListTitle" data-original-title="@(Model.CheckList.Title.Trim())"
+    class="position-relative @(string.IsNullOrEmpty(Model.CheckList.Title) ? "text-muted" : "")">
+    <label contenteditable="true">@title</label>
+    <i id="remove-list" class="fa fa-close position-absolute end-0 pe-2 pt-1" role="button"></i>
 </h2>
 <div id="pendingItems">
     @foreach (var item in Model.CheckList.PendingItems)

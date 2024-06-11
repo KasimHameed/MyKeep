@@ -12,12 +12,12 @@ public static class RenameCheckListHandler
     [AggregateHandler]
     public static (IResult, Events) Handle(RenameCheckList cmd, CheckList entity)
     {
-        if (entity.Title == cmd.Title) return (Results.Ok(), []);
+        if (entity.Title.Trim() == cmd.Title.Trim()) return (Results.Ok(), []);
         return (Results.Accepted(), [CheckListRenamed.From(cmd)]);
     }
 }
 
 public record CheckListRenamed(Guid Id, string Title)
 {
-    public static CheckListRenamed From(RenameCheckList cmd) => new(cmd.Id, cmd.Title);
+    public static CheckListRenamed From(RenameCheckList cmd) => new(cmd.Id, cmd.Title.Trim());
 }
