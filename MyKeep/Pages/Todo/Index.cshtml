@@ -1,0 +1,46 @@
+@page "{id:guid}"
+@model MyKeep.Pages.Todo.Index
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/todo/index.css"/>
+}
+
+@{
+    var title = string.IsNullOrEmpty(Model.CheckList.Title) ? "Untitled" : Model.CheckList.Title;
+}
+
+
+<h2 data-id="@Model.Id" id="checkListTitle" data-original-title="@(Model.CheckList.Title)"
+    class="@(string.IsNullOrEmpty(Model.CheckList.Title) ? "text-muted" : "")" contenteditable="true">
+    @title
+</h2>
+<div id="pendingItems">
+    @foreach (var item in Model.CheckList.PendingItems)
+    {
+        <div class="pending position-relative" data-key="@item.Key">
+            <i class="fa fa-grip-vertical fa-fw me-1" draggable="true"></i>
+            <input type="checkbox"/><label contenteditable="true">@item.Text</label>
+            <i class="fa fa-close position-absolute end-0 pe-2 pt-1 remove-item" role="button"></i>
+        </div>
+    }
+</div>
+<div>
+    <button class="btn" type="button" id="addPending"><i class="fa fa-plus"></i> Add</button>
+</div>
+<div id="completedItems">
+    @foreach (var item in Model.CheckList.CompletedItems)
+    {
+        <div class="completed position-relative" data-key="@item.Key">
+            <i class="fa fa-grip-vertical fa-fw me-1"></i>
+            <input type="checkbox" checked="checked"/><label contenteditable="true">@item.Text</label>
+            <i class="fa fa-close position-absolute end-0 pe-2 pt-1 remove-item" role="button"></i>
+        </div>
+    }
+</div>
+
+
+@section Scripts
+{
+    <script src="~/js/todo/index.js"></script>
+}

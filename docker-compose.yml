@@ -1,0 +1,6 @@
+﻿services:
+  mykeep:
+    image: mykeep
+    build:
+      context: .
+      dockerfile: MyKeep/Dockerfile
