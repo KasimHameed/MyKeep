@@ -19,8 +19,14 @@ public static class MoveItemToPositionInListHandler
         if (toMoveItem is null)
             return (Results.Problem("Could not find move key", statusCode: StatusCodes.Status404NotFound), []);
 
-        if (cmd.AfterKey is null)
-            return (Results.Accepted(), [ItemMovedToTopOfList.From(cmd)]);
+        var toMoveItemIndex = CheckListProjection.IndexOf(entity.PendingItems, cmd.Key);
+        switch (cmd.AfterKey)
+        {
+            case null when toMoveItemIndex == 0:
+                return (Results.Ok(), []);
+            case null:
+                return (Results.Accepted(), [ItemMovedToTopOfList.From(cmd)]);
+        }
 
         var afterItem = entity.PendingItems.SingleOrDefault(i => i.Key == cmd.AfterKey);
         if (afterItem is null)

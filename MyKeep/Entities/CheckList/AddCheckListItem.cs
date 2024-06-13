@@ -17,7 +17,7 @@ public static class AddCheckListItemHandler
     [AggregateHandler]
     public static (IResult, Events) Handle(AddCheckListItem cmd, CheckList entity, AddCheckListItemKey key)
     {
-        return (Results.Accepted(value: new { Key = key }), [CheckListItemAdded.From(cmd, key.Value)]);
+        return (Results.Accepted(value: new { Key = key.Value }), [CheckListItemAdded.From(cmd, key.Value)]);
     }
 }
 

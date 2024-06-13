@@ -13,7 +13,6 @@ public static class UpdateCheckListItemHandler
     public static (IResult, Events) Handle(UpdateCheckListItem cmd, CheckList entity)
     {
         var items = cmd.IsCompleted ? entity.CompletedItems : entity.PendingItems;
-        var length = items.Length;
 
         var item = items.SingleOrDefault(i => i.Key == cmd.Key);
         if (item is null) return (Results.Problem("Did not find key", statusCode: StatusCodes.Status404NotFound), []);
