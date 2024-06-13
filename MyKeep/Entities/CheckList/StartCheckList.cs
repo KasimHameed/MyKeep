@@ -8,7 +8,7 @@ namespace MyKeep.Entities.TodoList;
 // COMMAND
 public record StartCheckList([property: Identity]Guid Id);
 
-public record StartCheckListKey(string Key);
+public record StartCheckListKey(string Value);
 
 // COMMAND HANDLER/DECIDER
 public static class StartCheckListHandler
@@ -21,7 +21,7 @@ public static class StartCheckListHandler
         => (Results.Accepted(linkGenerator.GetPathByPage("/Todo/Index", values: new{cmd.Id})), 
         [
             CheckListStarted.From(cmd),
-            new CheckListItemAdded(cmd.Id, key.Key)
+            new CheckListItemAdded(cmd.Id, key.Value)
         ]);
 }
 
