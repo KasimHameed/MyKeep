@@ -16,7 +16,7 @@ public class CheckListProjection: SingleStreamProjection<CheckList>
     private static int IndexOf(IEnumerable<CheckListItem> items, string key)
         => items.Zip(Enumerable.Range(0, int.MaxValue), Tuple.Create).Single(i => i.Item1.Key == key).Item2;
     
-    public static CheckList Create(CheckListStarted evt) => new(evt.Id, "", [new CheckListItem(KeyGenerator.GetUniqueKey(8), "")], []);
+    public static CheckList Create(CheckListStarted evt) => new(evt.Id, "", [], []);
 
     public static CheckList Apply(CheckListItemAdded evt, CheckList entity) =>
         entity with { PendingItems = [..entity.PendingItems, new CheckListItem(evt.Key, "")]};
