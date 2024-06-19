@@ -2,7 +2,7 @@ using Marten.Events.Aggregation;
 
 namespace MyKeep.Entities.TodoList;
 
-public record CheckList(Guid Id, string Title, CheckListItem[] PendingItems, CheckListItem[] CompletedItems);
+public record CheckList(Guid Id, string Title, CheckListItem[] PendingItems, CheckListItem[] CompletedItems, string Color);
 
 public record CheckListItem(string Key, string Text);
 
@@ -16,7 +16,9 @@ public class CheckListProjection: SingleStreamProjection<CheckList>
     internal static int IndexOf(IEnumerable<CheckListItem> items, string key)
         => items.Zip(Enumerable.Range(0, int.MaxValue), Tuple.Create).Single(i => i.Item1.Key == key).Item2;
     
-    public static CheckList Create(CheckListStarted evt) => new(evt.Id, "", [], []);
+    public static CheckList Create(CheckListStarted evt) => new(evt.Id, "", [], [], "lightgray");
+    
+    public static CheckList Create(CheckListStartedWithColor evt) => new(evt.Id, "", [], [], evt.Color ?? "lightgray");
 
     public static CheckList Apply(CheckListItemAdded evt, CheckList entity) =>
         entity with { PendingItems = [..entity.PendingItems, new CheckListItem(evt.Key, "")]};
@@ -134,5 +136,7 @@ public class CheckListProjection: SingleStreamProjection<CheckList>
             CompletedItems = [..entity.CompletedItems[..index], ..entity.CompletedItems[(index + 1)..]]
         };
     }
+
+    public static CheckList Apply(CheckListColorUpdated evt, CheckList entity) => entity with { Color = evt.Color };
 }
 

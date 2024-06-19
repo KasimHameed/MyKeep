@@ -4,29 +4,27 @@ using Wolverine.Marten;
 
 namespace MyKeep.Entities.TodoList;
 
-
 // COMMAND
-public record StartCheckList([property: Identity]Guid Id);
-
-public record StartCheckListData(string? Link, string Key);
+public record StartCheckList([property: Identity]Guid Id, string StartingColor);
 
 // COMMAND HANDLER/DECIDER
 public static class StartCheckListHandler
-{
-    public static StartCheckListData Load(StartCheckList cmd, LinkGenerator linkGenerator) => 
-        new StartCheckListData(linkGenerator.GetPathByPage("/Todo/Index", values: new{cmd.Id}), KeyGenerator.GetUniqueKey(8));
-    
+{    
     [WolverinePost("/api/checklist")]
     [AggregateHandler(AggregateType = typeof(CheckList))]
-    public static (IResult, Events) Handle(StartCheckList cmd, StartCheckListData data)
-        => (Results.Accepted(data.Link), 
-        [
-            CheckListStarted.From(cmd),
-            new CheckListItemAdded(cmd.Id, data.Key)
+    public static (IResult, Events) Handle(StartCheckList cmd, LinkGenerator linkGenerator)
+        => (Results.Accepted(linkGenerator.GetPathByPage("/Todo/Index", values: new{cmd.Id})), [
+            CheckListStartedWithColor.From(cmd),
+            new CheckListItemAdded(cmd.Id, KeyGenerator.GetUniqueKey(8))
         ]);
 }
 
 public record CheckListStarted(Guid Id)
 {
     public static CheckListStarted From(StartCheckList cmd) => new(cmd.Id);
+}
+
+public record CheckListStartedWithColor(Guid Id, string Color)
+{
+    public static CheckListStartedWithColor From(StartCheckList cmd) => new(cmd.Id, cmd.StartingColor);
 }
