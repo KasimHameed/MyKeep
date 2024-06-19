@@ -13,7 +13,7 @@ public class CheckListProjection: SingleStreamProjection<CheckList>
         DeleteEvent<ListDeleted>();
     }
     
-    private static int IndexOf(IEnumerable<CheckListItem> items, string key)
+    internal static int IndexOf(IEnumerable<CheckListItem> items, string key)
         => items.Zip(Enumerable.Range(0, int.MaxValue), Tuple.Create).Single(i => i.Item1.Key == key).Item2;
     
     public static CheckList Create(CheckListStarted evt) => new(evt.Id, "", [], [], "lightgray");

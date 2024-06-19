@@ -12,6 +12,8 @@ public static class AddCheckListItemHandler
 {
     public static Key Load() => new (KeyGenerator.GetUniqueKey(8));
 
+    public static AddCheckListItemKey Load(AddCheckListItem _) => new AddCheckListItemKey(KeyGenerator.GetUniqueKey(8));
+    
     [WolverinePost("/api/checklist/add")]
     [AggregateHandler]
     public static (IResult, Events) Handle(AddCheckListItem cmd, CheckList entity, Key key)

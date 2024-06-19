@@ -9,7 +9,7 @@ public record StartCheckList([property: Identity]Guid Id, string StartingColor);
 
 // COMMAND HANDLER/DECIDER
 public static class StartCheckListHandler
-{
+{    
     [WolverinePost("/api/checklist")]
     [AggregateHandler(AggregateType = typeof(CheckList))]
     public static (IResult, Events) Handle(StartCheckList cmd, LinkGenerator linkGenerator)
