@@ -207,3 +207,16 @@ $('#addPending').on('click', evt => {
         pendingItems.append($(newLabel));
     })
 });
+
+$('.change-color').on('click', evt => {
+    const color = $(evt.currentTarget).data('color');
+    $.ajax({
+        url: "/api/checklist/color",
+        method: "patch",
+        contentType: "application/json",
+        data: JSON.stringify({
+            id: checkListId,
+            newColor: color
+        })
+    })
+})

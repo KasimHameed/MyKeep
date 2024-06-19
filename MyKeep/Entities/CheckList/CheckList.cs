@@ -136,5 +136,7 @@ public class CheckListProjection: SingleStreamProjection<CheckList>
             CompletedItems = [..entity.CompletedItems[..index], ..entity.CompletedItems[(index + 1)..]]
         };
     }
+
+    public static CheckList Apply(CheckListColorUpdated evt, CheckList entity) => entity with { Color = evt.Color };
 }
 
