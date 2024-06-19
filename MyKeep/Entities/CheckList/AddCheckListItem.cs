@@ -6,15 +6,17 @@ namespace MyKeep.Entities.TodoList;
 
 public record AddCheckListItem([property: Identity] Guid Id);
 
+public record Key(string Value);
+
 public static class AddCheckListItemHandler
 {
+    public static Key Load() => new (KeyGenerator.GetUniqueKey(8));
 
     [WolverinePost("/api/checklist/add")]
     [AggregateHandler]
-    public static (IResult, Events) Handle(AddCheckListItem cmd, CheckList entity)
+    public static (IResult, Events) Handle(AddCheckListItem cmd, CheckList entity, Key key)
     {
-        var key = KeyGenerator.GetUniqueKey(8);
-        return (Results.Accepted(value: new { Key = key }), [CheckListItemAdded.From(cmd, key)]);
+        return (Results.Accepted(value: new { Key = key.Value }), [CheckListItemAdded.From(cmd, key.Value)]);
     }
 }
 
